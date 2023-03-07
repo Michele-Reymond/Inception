@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+
+  nginx:
+      container_name: nginx
+      build:
+        context: ./requirements/nginx
+        dockerfile: Dockerfile
+      ports:
+        - 443:443
+      volumes:
+        - wordpress_data:/var/www/html
+      restart: always
+      networks:
+        - network
+
+  db:
+    container_name: mariadb
+    build:
+      context: ./requirements/mariadb
+      dockerfile: Dockerfile
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    env_file:
+      - .env
+    networks:
+      - inception-network
+
+    wordpress:
+      container_name: wordpress
+      depends_on:
+          - mariadb
+      build:
+        context: ./requirements/wordpress
+        dockerfile: Dockerfile
+      ports:
+        - "8000:80"
+      volumes:
+        - wordpress_data:/var/www/html
+      restart: always
+      env_file:
+      - .env
+      networks:
+      - inception-network
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /Users/mim/42/inception-data/db #home
+      # device: /home/mreymond/data/db #school
+      o: bind
+  wordpress_data: 
+    driver: local
+    driver_opts:
+      type: none
+      device: /Users/mim/42/inception-data/db #home
+      # device: /home/mreymond/data/wp #school
+      o: bind
+
+networks:
+  inception-network:
+  
+# Un volume contenant votre base de données WordPress
+# Un second volume contenant les fichiers de votre site WordPress.
+
+# Un docker-network qui fera le lien entre vos containers
+# La ligne network(s) doit être présente dans votre fichier docker-compose.yml
+# Renseignez-vous sur les bonnes pratiques d’écriture de Dockerfiles et le "PID 1".

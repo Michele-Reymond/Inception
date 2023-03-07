@@ -1,3 +1,5 @@
+# Un container Docker contenant NGINX avec TLSv1.2 ou TLSv1.3 uniquement
+
 FROM debian:buster
 
 # Install nginx
