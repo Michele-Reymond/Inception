@@ -2,63 +2,72 @@ version: '3.8'
 
 services:
 
-  nginx:
-      container_name: nginx
-      build:
-        context: ./requirements/nginx
-        dockerfile: Dockerfile
-      ports:
-        - 443:443
-      volumes:
-        - wordpress_data:/var/www/html
-      restart: always
-      networks:
-        - network
-
   db:
+    image: mariadb
     container_name: mariadb
-    build:
-      context: ./requirements/mariadb
-      dockerfile: Dockerfile
     volumes:
       - db_data:/var/lib/mysql
     restart: always
-    env_file:
-      - .env
+    environment:
+      - MYSQL_ROOT_PASSWORD=somewordpress
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=wordpress
+      - MYSQL_PASSWORD=wordpress
+    expose:
+      - 3306
+      - 33060
     networks:
       - inception-network
 
-    wordpress:
-      container_name: wordpress
-      depends_on:
-          - mariadb
-      build:
-        context: ./requirements/wordpress
-        dockerfile: Dockerfile
-      ports:
-        - "8000:80"
-      volumes:
-        - wordpress_data:/var/www/html
-      restart: always
-      env_file:
-      - .env
-      networks:
+  wordpress:
+    depends_on:
+      - mariadb
+    container_name: wordpress
+    image: wordpress:latest
+    volumes:
+      - wp_data:/var/www/html
+    ports:
+      - 80:80
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_PASSWORD=wordpress
+      - WORDPRESS_DB_NAME=wordpress
+    networks:
       - inception-network
+
+    # env_file:
+    #   - .env
+
+  nginx:
+      image: nginx
+      container_name: nginx
+      # build:
+      #   context: ./requirements/nginx
+      #   dockerfile: Dockerfile
+      ports:
+        - 443:443
+      volumes:
+        - wp_data:/var/www/html
+      restart: always
+      networks:
+        - inception-network
 
 volumes:
   db_data:
     driver: local
     driver_opts:
       type: none
-      device: /Users/mim/42/inception-data/db #home
-      # device: /home/mreymond/data/db #school
+      # device: /Users/mim/42/inception-data/db #home
+      device: /Users/mreymond/data/db #school
       o: bind
-  wordpress_data: 
+  wp_data:
     driver: local
     driver_opts:
       type: none
-      device: /Users/mim/42/inception-data/db #home
-      # device: /home/mreymond/data/wp #school
+      # device: /Users/mim/42/inception-data/db #home
+      device: /Users/mreymond/data/wp #school
       o: bind
 
 networks:
