@@ -3,11 +3,13 @@ all: run
 run:
 		@if [ ! -e "/Users/$(USER)/data" ]; then \
 			echo "Setting up volumes:"; \
-			mkdir /home/$USER/data; \
-			mkdir /home/$USER/data/db; \
-			mkdir /home/$USER/data/wp; \
-			echo "volumes installed in /home/$USER/data"; \
+			mkdir /Users/$(USER)/data; \
+			mkdir /Users/$(USER)/data/db; \
+			mkdir /Users/$(USER)/data/wp; \
+			echo "volumes installed in /Users/$(USER)/data"; \
 		fi
+		sudo chmod 777 /etc/hosts
+		sudo echo "127.0.0.1 mreymond.42.fr" >> /etc/hosts
 		@docker compose -f ./srcs/docker-compose.yml up -d --build
 
 down:

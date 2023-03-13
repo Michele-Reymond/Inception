@@ -2,10 +2,10 @@
 
 FROM debian:buster
 
-RUN apk update && \
-    apk add php-fpm &&;
+# RUN apk update && \
+#     apk add php-fpm &&;
 
-COPY ./config/default.conf /var/www/html
+# COPY ./config/default.conf /var/www/html
 
 # quand t'as des env variables à utiliser faire un sh
 

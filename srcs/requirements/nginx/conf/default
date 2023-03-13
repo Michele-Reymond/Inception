@@ -1,12 +1,31 @@
 server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    
-    root /usr/share/nginx/html;
-    index index.html index.htm;
 
-    server_name _;
-    location / {
-        try_files $uri $uri/ =404;
+	listen	443 ssl;
+	listen	[::]:443 ssl;
+	server_name mreymond.42.fr;
+	root /var/www/html/wordpress;
+	index index.php;
+
+	# ssl
+	ssl_protocols TLSv1.2 TLSv1.3;
+	ssl_certificate /etc/nginx/ssl/mreymond.42.fr.crt;
+	ssl_certificate_key /etc/nginx/ssl/mreymond.42.fr.key;
+
+	# routes 
+	location / {
+		location ~ \.php$ {
+            # ces 2 éléments servent à analyser correctement la demande (fichiers, infos suppl.)
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            # par où passe la requête pour traduire le backend
+            fastcgi_pass wordpress:9000;
+            # définit le fichier d'index qui doit être ajouté aux valeurs de $fastcgi_script_name
+            fastcgi_index index.php;
+            # The array directive that can be used to set parameters to values
+            include fastcgi_params;
+            # définit où trouver les réponses aux requêtes
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+            fastcgi_param PATH_INFO $fastcgi_path_info;
+        }
     }
 }
