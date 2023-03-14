@@ -1,37 +1,58 @@
-# install: configure
+all: run
 
-# configure:
+run:
+		@if [ ! -e "/Users/$(USER)/data" ]; then \
+			echo "Setting up volumes:"; \
+			mkdir /Users/$(USER)/data; \
+			mkdir /Users/$(USER)/data/db; \
+			mkdir /Users/$(USER)/data/wp; \
+			echo "volumes installed in /Users/$(USER)/data"; \
+		fi
+# sudo chmod 777 /etc/hosts
+# sudo echo "127.0.0.1 mreymond.42.fr" >> /etc/hosts
+		@docker compose -f ./srcs/docker-compose.yml up -d --build
 
-#     @echo "⚙️ Configuring WordPress parameters..."
-#     wp core install \
-#         --url=${WORDPRESS_WEBSITE_URL_WITHOUT_HTTP} \
-#         --title=$(WORDPRESS_WEBSITE_TITLE) \
-#         --admin_user=${WORDPRESS_ADMIN_USER} \
-#         --admin_password=${WORDPRESS_ADMIN_PASSWORD} \
-#         --admin_email=${WORDPRESS_ADMIN_EMAIL}
+down:
+		@docker compose -f ./srcs/docker-compose.yml down --remove-orphans;
 
-#     wp option update siteurl ${WORDPRESS_WEBSITE_URL}
-#     wp rewrite structure $(WORDPRESS_WEBSITE_POST_URL_STRUCTURE)
+clean:	down
+		sudo rm -rf /Users/$(USER)/data
+		@echo "Deleting all images : "
+		@docker image rmi -f `docker images -qa`;
+		@echo "Deleting all volumes : "
+		@docker volume rm -f `docker volume ls -q`;
+
+cvol:	down
+		sudo rm -rf /Users/$(USER)/data
+		@echo "Deleting all volumes : "
+		@docker volume rm -f `docker volume ls -q`;
+
+# create:
+# 		@sh setup.sh
+# 		@docker-compose -f ./srcs/docker-compose.yml create --build
 
 # start:
-#     docker-compose up -d --build
+# 		docker-compose -f ./srcs/docker-compose.yml start;
 
-# healthcheck:
-#     docker-compose run --rm healthcheck
+# stop:
+# 		docker-compose -f ./srcs/docker-compose.yml stop;
 
-# down:
-#     docker-compose down
+re:		clean run
 
-# install: start healthcheck
+# START containers in interactive mode
+nginx:
+		@docker exec -it nginx bash
+wordpress:
+		@docker exec -it wordpress bash
+mariadb:
+		@docker exec -it mariadb bash
 
-# configure:
-#     docker-compose -f docker-compose.yml -f wp-auto-config.yml run --rm wp-auto-config
+# docker usefull cmds
+prune: 	down
+		@docker system prune;
+ps:
+		@docker ps
+img:
+		@docker image ls -a
 
-# autoinstall: start
-#     docker-compose -f docker-compose.yml -f wp-auto-config.yml run --rm wp-auto-config
-
-# clean: down
-#     @echo "💥 Removing related folders/files..."
-#     @rm -rf  mysql/* wordpress/*
-
-# reset: clean
+.PHONY: all run stop start down create clean prune nginx wordpress mariadb ps img re
