@@ -3,6 +3,9 @@ version: '3.8'
 services:
   db:
     container_name: mariadb
+    build:
+        context: ./requirements/mariadb
+        dockerfile: Dockerfile
     image: mariadb
     volumes:
       - db_data:/var/lib/mysql
@@ -19,8 +22,8 @@ services:
     image: wordpress:6.1.1-php8.2-fpm
     volumes:
       - wp_data:/var/www/html
-    ports:
-      - 80:80
+    # ports:
+    #   - 80:80
     restart: always
     networks:
       - inception-network
