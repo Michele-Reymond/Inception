@@ -5,9 +5,7 @@ COPY ./conf/database.sql /tmp/
 
 # installe les packets nécessaires 
 # définit le user mysql comme proprio de tous les dossier relatifs à mysql (compgen -u)
-RUN	apt-get update && apt-get install -y \
-		mariadb-server \
-		mariadb-client
+RUN	apt-get update && apt-get install -y mariadb-server mariadb-client
 
 RUN chmod +x /entrypoint.sh
 	# apt-get clean && rm -rf /var/lib/apt/lists/* && \

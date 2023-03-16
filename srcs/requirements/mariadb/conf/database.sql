@@ -1,5 +1,6 @@
 /** methode d authentification normale donc : set le password **/
-SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MYSQL_ROOT_PASSWORD');
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
+-- SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$MYSQL_ROOT_PASSWORD');
 
 /** Creation du premier user, l'autre sera cree via le container wordpress */
 CREATE DATABASE $MYSQL_DATABASE;
