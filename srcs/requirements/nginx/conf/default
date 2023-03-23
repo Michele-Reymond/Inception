@@ -1,8 +1,8 @@
 server {
 
-	listen	443 ssl;
-	listen	[::]:443 ssl;
-	server_name localhost mreymond.42.fr;
+	listen	443 ssl http2;
+	listen	[::]:443 ssl http2;
+	server_name localhost mreymond.42.fr www.mreymond.42.fr;
 	root /var/www/html;
 	index index.php index.html;
 
@@ -11,22 +11,44 @@ server {
 	ssl_certificate /etc/nginx/ssl/mreymond.42.fr.crt;
 	ssl_certificate_key /etc/nginx/ssl/mreymond.42.fr.key;
 
+    # tout ce qui concerne les .php
     location ~ \.php$ {
+        # analyser correctement la demande (fichiers, infos suppl.)
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+        # port traduire le backend
         fastcgi_pass wordpress:9000;
+
+        # définit l'index de fatsCGI
         fastcgi_index index.php;
+
+        # The array directive that can be used to set parameters to values
         include fastcgi_params;
+
+        # définit dans quel dossier sont les réponses aux requêtes
         fastcgi_param SCRIPT_FILENAME /var/www/html$fastcgi_script_name;
-        # fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_param SCRIPT_NAME $fastcgi_script_name;
     }
 
+    # balec du favicon
     location = /favicon.ico {
         log_not_found off;
         access_log off;
     }
 
+    # pour les requêtes / diriger sur index.php
     location / {
         try_files $uri $uri/ /index.php$is_args$args;
     }
 }
+
+# rediriger http vers https
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name localhost mreymond.42.fr www.mreymond.42.fr;
+
+    return 302 https://$server_name$request_uri;
+}
+
