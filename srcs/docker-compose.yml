@@ -9,7 +9,7 @@ services:
     image: mariadb
     volumes:
       - db_data:/var/lib/mysql
-    restart: always
+    restart: "no"
     networks:
       - inception-network
     env_file:
@@ -22,8 +22,6 @@ services:
     image: wordpress:6.1.1-php8.2-fpm
     volumes:
       - wp_data:/var/www/html
-    # ports:
-    #   - 80:80
     restart: always
     networks:
       - inception-network

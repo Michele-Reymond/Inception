@@ -8,22 +8,22 @@ run:
 			mkdir /Users/$(USER)/data/wp; \
 			echo "volumes installed in /Users/$(USER)/data"; \
 		fi
-		sudo chmod 777 /etc/hosts
-		sudo echo "127.0.0.1 mreymond.42.fr" >> /etc/hosts
+# sudo chmod 777 /etc/hosts
+# sudo echo "127.0.0.1 mreymond.42.fr" >> /etc/hosts
 		@docker compose -f ./srcs/docker-compose.yml up -d --build
 
 down:
 		@docker compose -f ./srcs/docker-compose.yml down --remove-orphans;
 
 clean:	down
-		sudo rm -rf /Users/$(USER)/data
+#sudo rm -rf /Users/$(USER)/data
 		@echo "Deleting all images : "
 		@docker image rmi -f `docker images -qa`;
 		@echo "Deleting all volumes : "
 		@docker volume rm -f `docker volume ls -q`;
 
 cvol:	down
-		sudo rm -rf /Users/$(USER)/data
+#sudo rm -rf /Users/$(USER)/data
 		@echo "Deleting all volumes : "
 		@docker volume rm -f `docker volume ls -q`;
 
