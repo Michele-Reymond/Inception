@@ -56,10 +56,3 @@ volumes:
 
 networks:
   inception-network:
-  
-# Un volume contenant votre base de données WordPress
-# Un second volume contenant les fichiers de votre site WordPress.
-
-# Un docker-network qui fera le lien entre vos containers
-# La ligne network(s) doit être présente dans votre fichier docker-compose.yml
-# Renseignez-vous sur les bonnes pratiques d’écriture de Dockerfiles et le "PID 1".
