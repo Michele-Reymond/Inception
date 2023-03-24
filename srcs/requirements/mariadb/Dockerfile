@@ -22,3 +22,4 @@ ENV MYSQL_DATABASE=${MYSQL_DATABASE} \
 
 # lance  le script pour créer la database wordpress
 ENTRYPOINT ["./entrypoint.sh"]
+# ENTRYPOINT [ "sleep infinity" ]
