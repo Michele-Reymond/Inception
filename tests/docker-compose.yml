@@ -1,32 +1,58 @@
-version: '3.1'
+version: '3.8'
 
 services:
   db:
-    # We use a mariadb image which supports both amd64 & arm64 architecture
+    container_name: mariadb
     image: mariadb
     volumes:
       - db_data:/var/lib/mysql
     restart: always
-    environment:
-      - MYSQL_ROOT_PASSWORD=somewordpress
-      - MYSQL_DATABASE=wordpress
-      - MYSQL_USER=wordpress
-      - MYSQL_PASSWORD=wordpress
-    expose:
-      - 3306
-      - 33060
+    networks:
+      - inception-network
+    env_file:
+      - .env
+
   wordpress:
-    image: wordpress:latest
+    depends_on:
+      - mariadb
+    container_name: wordpress
+    image: wordpress:6.1.1-php8.2-fpm # wp with fpm for debian
     volumes:
       - wp_data:/var/www/html
     ports:
       - 80:80
     restart: always
-    environment:
-      - WORDPRESS_DB_HOST=db
-      - WORDPRESS_DB_USER=wordpress
-      - WORDPRESS_DB_PASSWORD=wordpress
-      - WORDPRESS_DB_NAME=wordpress
+    networks:
+      - inception-network
+    env_file:
+      - .env
+
+  nginx:
+      container_name: nginx
+      build:
+        context: ./requirements/nginx
+        dockerfile: Dockerfile
+      ports:
+        - 443:443 #https 
+      volumes:
+        - wp_data:/var/www/html
+      restart: always
+      networks:
+        - inception-network
+
 volumes:
   db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/$USER/data/db
   wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /Users/$USER/data/wp
+
+networks:
+  inception-network:

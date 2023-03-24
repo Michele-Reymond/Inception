@@ -7,7 +7,7 @@ services:
     image: mariadb
     volumes:
       - db_data:/var/lib/mysql
-    restart: always
+    restart: "no"
     networks:
       - inception-network
     env_file:
@@ -20,8 +20,6 @@ services:
     image: wordpress:6.1.1-php8.2-fpm
     volumes:
       - wp_data:/var/www/html
-    # ports:
-    #   - 80:80
     restart: always
     networks:
       - inception-network
@@ -57,10 +55,3 @@ volumes:
 
 networks:
   inception-network:
-  
-# Un volume contenant votre base de données WordPress
-# Un second volume contenant les fichiers de votre site WordPress.
-
-# Un docker-network qui fera le lien entre vos containers
-# La ligne network(s) doit être présente dans votre fichier docker-compose.yml
-# Renseignez-vous sur les bonnes pratiques d’écriture de Dockerfiles et le "PID 1".
