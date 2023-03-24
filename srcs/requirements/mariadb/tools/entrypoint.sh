@@ -38,7 +38,7 @@ if [ -e /tmp/database.sql ]; then
 
         # applique les droits sur le répertoire de la base de donnée
         chown -R mysql:mysql /var/lib/mysql
-        chown -R mysql:mysql /run/mysqld
+        # chown -R mysql:mysql /run/mysqld
 
         rm /tmp/database.sql
     fi
