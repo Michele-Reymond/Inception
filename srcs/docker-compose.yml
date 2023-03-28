@@ -7,24 +7,24 @@ services:
     image: mariadb
     volumes:
       - db_data:/var/lib/mysql
-    restart: "no"
-    networks:
-      - inception-network
-    env_file:
-      - .env
-
-  wordpress:
-    depends_on:
-      - mariadb
-    container_name: wordpress
-    image: wordpress:6.1.1-php8.2-fpm
-    volumes:
-      - wp_data:/var/www/html
     restart: always
     networks:
       - inception-network
     env_file:
       - .env
+
+  # wordpress:
+  #   depends_on:
+  #     - mariadb
+  #   container_name: wordpress
+  #   image: wordpress:6.1.1-php8.2-fpm
+  #   volumes:
+  #     - wp_data:/var/www/html
+  #   restart: always
+  #   networks:
+  #     - inception-network
+  #   env_file:
+  #     - .env
 
   nginx:
       container_name: nginx

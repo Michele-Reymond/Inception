@@ -16,14 +16,14 @@ down:
 		@docker compose -f ./srcs/docker-compose.yml down --remove-orphans;
 
 clean:	down
-#sudo rm -rf /Users/$(USER)/data
+		sudo rm -rf /Users/$(USER)/data
 		@echo "Deleting all images : "
 		@docker image rmi -f `docker images -qa`;
 		@echo "Deleting all volumes : "
 		@docker volume rm -f `docker volume ls -q`;
 
 cvol:	down
-#sudo rm -rf /Users/$(USER)/data
+		sudo rm -rf /Users/$(USER)/data
 		@echo "Deleting all volumes : "
 		@docker volume rm -f `docker volume ls -q`;
 

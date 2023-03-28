@@ -1,7 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 target=/etc/mysql/mariadb.conf.d/50-server.cnf
-
 grep -E "bind-address( )+ = 127.0.0.1" $target > /dev/null
 # $? contient le code de retour de la dernière opération
 
@@ -9,57 +8,93 @@ grep -E "bind-address( )+ = 127.0.0.1" $target > /dev/null
 if [ $? -eq 0 ]; then
 
     # ajout de la configutation pour le serveur
-    # printf '\n\nbind-address=0.0.0.0\nport=3306\n' >> $target
     sed -i "s|bind-address            = 127.0.0.1|bind-address            = 0.0.0.0|g" $target
 
 fi
 
-# controle si la bd est deja cree
-if [ -e /tmp/database.sql ]; then
+# init mysql 
+/etc/init.d/mysql start
 
-    if [ -z "$MYSQL_DATABASE" ]; then
-
-        echo "[-] no config variables"
-        echo "no config variables" >> /log.err
-
-    else
-
-        echo "[+] create database"
-
-        /usr/bin/mysqld_safe &
-
-        sleep 1
+# check si la db existe déjà
+if [ -d "/var/lib/mysql/$MYSQL_DATABASE" ]
+then 
+	echo "Database already exists"
+else
+    # lancement de mysql_secure_installation avec réponses automatiques avec expect
+    expect -c "
+        set timeout 10
+        spawn mysql_secure_installation
+        expect \"Enter current password for root (enter for none):\"
+        send \"$MYSQL_ROOT_PASSWORD\r\"
+        expect \"Change the root password?\"
+        send \"n\r\"
+        expect \"Remove anonymous users?\"
+        send \"y\r\"
+        expect \"Disallow root login remotely?\"
+        send \"y\r\"
+        expect \"Remove test database and access to it?\"
+        send \"y\r\"
+        expect \"Reload privilege tables now?\"
+        send \"y\r\"
+        expect eof
+        "
 
         eval "echo \"$(cat /tmp/database.sql)\"" > /tmp/database.compiled.sql
         cat /tmp/database.compiled.sql | mariadb
 
-        killall mysqld
-        sleep 2
-
         # applique les droits sur le répertoire de la base de donnée
         chown -R mysql:mysql /var/lib/mysql
-        # chown -R mysql:mysql /run/mysqld
-
-        rm /tmp/database.sql
-    fi
-
-else
-
-    echo "[+] database created"
-
 fi
 
-if [ -e /usr/bin/mysqld_safe ]; then
+# Lancement du serveur 
+/usr/bin/mysqld_safe
 
-    # echo "-------- test----------"
-    # find / -type s
 
-    echo "[+] start server mariadb"
-    # Lancement du serveur 
-    /usr/bin/mysqld_safe
+# # controle si la bd est deja cree
+# if [ -e /tmp/database.sql ]; then
 
-else
+#     if [ -z "$MYSQL_DATABASE" ]; then
 
-    echo "[-] Server not installed"
+#         echo "[-] no config variables"
+#         echo "no config variables" >> /log.err
 
-fi
+#     else
+
+#         echo "[+] create database"
+
+#         /usr/bin/mysqld_safe &
+
+#         sleep 1
+
+#         eval "echo \"$(cat /tmp/database.sql)\"" > /tmp/database.compiled.sql
+#         cat /tmp/database.compiled.sql | mariadb
+
+#         killall mysqld
+#         sleep 2
+
+#         # applique les droits sur le répertoire de la base de donnée
+#         chown -R mysql:mysql /var/lib/mysql
+
+#         rm /tmp/database.sql
+#     fi
+
+# else
+
+#     echo "[+] database created"
+
+# fi
+
+# if [ -e /usr/bin/mysqld_safe ]; then
+
+#     # echo "-------- test----------"
+#     # find / -type s
+
+#     echo "[+] start server mariadb"
+#     # Lancement du serveur 
+#     /usr/bin/mysqld_safe
+
+# else
+
+#     echo "[-] Server not installed"
+
+# fi
