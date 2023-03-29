@@ -16,14 +16,14 @@ down:
 		@docker compose -f ./srcs/docker-compose.yml down --remove-orphans;
 
 clean:	down
-#sudo rm -rf /Users/$(USER)/data
+		sudo rm -rf /Users/$(USER)/data
 		@echo "Deleting all images : "
 		@docker image rmi -f `docker images -qa`;
 		@echo "Deleting all volumes : "
 		@docker volume rm -f `docker volume ls -q`;
 
 cvol:	down
-#sudo rm -rf /Users/$(USER)/data
+		sudo rm -rf /Users/$(USER)/data
 		@echo "Deleting all volumes : "
 		@docker volume rm -f `docker volume ls -q`;
 
@@ -42,9 +42,9 @@ re:		clean run
 # START containers in interactive mode
 nginx:
 		@docker exec -it nginx bash
-wordpress:
+wp:
 		@docker exec -it wordpress bash
-mariadb:
+db:
 		@docker exec -it mariadb bash
 
 # docker usefull cmds
@@ -55,4 +55,4 @@ ps:
 img:
 		@docker image ls -a
 
-.PHONY: all run stop start down create clean prune nginx wordpress mariadb ps img re
+.PHONY: all run stop start down create clean prune nginx wp db ps img re

@@ -7,7 +7,7 @@ services:
     image: mariadb
     volumes:
       - db_data:/var/lib/mysql
-    restart: "no"
+    restart: always
     networks:
       - inception-network
     env_file:
