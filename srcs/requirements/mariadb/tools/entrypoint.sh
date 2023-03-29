@@ -39,17 +39,19 @@ else
         expect eof
         "
 
-        eval "echo \"$(cat /tmp/database.sql)\"" > /tmp/database.compiled.sql
-        cat /tmp/database.compiled.sql | mariadb
-
+        echo "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE; GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; FLUSH PRIVILEGES;" | mysql -uroot -p$MYSQL_ROOT_PASSWORD
+        
         # applique les droits sur le répertoire de la base de donnée
-        chown -R mysql:mysql /var/lib/mysql
+        # chown -R mysql:mysql /var/lib/mysql
 fi
 
+/etc/init.d/mysql stop
+
 # Lancement du serveur 
-/usr/bin/mysqld_safe
+/usr/sbin/mysqld
 
 
+# /usr/bin/mysqld_safe
 # # controle si la bd est deja cree
 # if [ -e /tmp/database.sql ]; then
 

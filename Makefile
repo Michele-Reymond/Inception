@@ -42,9 +42,9 @@ re:		clean run
 # START containers in interactive mode
 nginx:
 		@docker exec -it nginx bash
-wordpress:
+wp:
 		@docker exec -it wordpress bash
-mariadb:
+db:
 		@docker exec -it mariadb bash
 
 # docker usefull cmds
@@ -55,4 +55,4 @@ ps:
 img:
 		@docker image ls -a
 
-.PHONY: all run stop start down create clean prune nginx wordpress mariadb ps img re
+.PHONY: all run stop start down create clean prune nginx wp db ps img re
