@@ -13,31 +13,31 @@ services:
     env_file:
       - .env
 
-  wordpress:
-    depends_on:
-      - mariadb
-    container_name: wordpress
-    image: wordpress:6.1.1-php8.2-fpm
-    volumes:
-      - wp_data:/var/www/html
-    restart: always
-    networks:
-      - inception-network
-    env_file:
-      - .env
+  # wordpress:
+  #   depends_on:
+  #     - mariadb
+  #   container_name: wordpress
+  #   image: wordpress:6.1.1-php8.2-fpm
+  #   volumes:
+  #     - wp_data:/var/www/html
+  #   restart: always
+  #   networks:
+  #     - inception-network
+  #   env_file:
+  #     - .env
 
-  nginx:
-      container_name: nginx
-      build:
-        context: ./requirements/nginx
-        dockerfile: Dockerfile
-      ports:
-        - 443:443 #https 
-      volumes:
-        - wp_data:/var/www/html
-      restart: always
-      networks:
-        - inception-network
+  # nginx:
+  #     container_name: nginx
+  #     build:
+  #       context: ./requirements/nginx
+  #       dockerfile: Dockerfile
+  #     ports:
+  #       - 443:443 #https 
+  #     volumes:
+  #       - wp_data:/var/www/html
+  #     restart: always
+  #     networks:
+  #       - inception-network
 
 volumes:
   db_data:

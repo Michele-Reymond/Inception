@@ -1,10 +1,12 @@
 FROM debian:buster
 
+VOLUME /var/lib/mysql
+
 # COPY ./tools/entrypoint.sh ./
 # COPY ./conf/database.sql /tmp/
 
 # # # installe les packets nécessaires 
-# # RUN	apt-get update && apt-get install -y mariadb-server mariadb-client
+# # RUN	apt update && apt install -y mariadb-server mariadb-client
 
 # RUN chmod +x /entrypoint.sh
 # 	# apt-get clean && rm -rf /var/lib/apt/lists/* && \
