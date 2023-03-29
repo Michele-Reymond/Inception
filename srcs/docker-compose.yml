@@ -1,17 +1,28 @@
 services:
-  db:
+  mariadb:
     container_name: mariadb
+    image: mariadb
     build:
         context: ./requirements/mariadb
         dockerfile: Dockerfile
-    image: mariadb
     volumes:
-      - db_data:/var/lib/mysql
+      - ~/data/db:/var/lib/mysql
     restart: always
     networks:
       - inception-network
     env_file:
       - .env
+
+# volumes:
+#   db_data:
+#     driver: local
+#     driver_opts:
+#       device: /Users/$USER/data/db
+#       type: volume
+#       o: bind
+
+networks:
+  inception-network:
 
   # wordpress:
   #   depends_on:
@@ -39,19 +50,19 @@ services:
   #     networks:
   #       - inception-network
 
-volumes:
-  db_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /Users/$USER/data/db
-  wp_data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /Users/$USER/data/wp
+# volumes:
+#   db_data:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: /Users/$USER/data/db
+#   wp_data:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: /Users/$USER/data/wp
 
-networks:
-  inception-network:
+# networks:
+#   inception-network:

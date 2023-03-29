@@ -1,16 +1,19 @@
 #!/bin/sh
 
-target=/etc/mysql/mariadb.conf.d/50-server.cnf
-grep -E "bind-address( )+ = 127.0.0.1" $target > /dev/null
-# $? contient le code de retour de la dernière opération
+# faire dans le Dockerfile bin-adresse et network
+# target=/etc/mysql/mariadb.conf.d/50-server.cnf
+# grep -E "bind-address( )+ = 127.0.0.1" $target > /dev/null
+# # $? contient le code de retour de la dernière opération
 
-# si le retour d erreur est 0
-if [ $? -eq 0 ]; then
+# # si le retour d erreur est 0
+# if [ $? -eq 0 ]; then
 
-    # ajout de la configutation pour le serveur
-    sed -i "s|bind-address            = 127.0.0.1|bind-address            = 0.0.0.0|g" $target
+#     # ajout de la configutation pour le serveur
+#     sed -i "s|bind-address            = 127.0.0.1|bind-address            = 0.0.0.0|g" $target
 
-fi
+# fi
+
+mysql_install_db
 
 # init mysql 
 /etc/init.d/mysql start
@@ -49,6 +52,8 @@ fi
 
 # Lancement du serveur 
 /usr/sbin/mysqld
+
+# sleep infinity
 
 
 # /usr/bin/mysqld_safe
