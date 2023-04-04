@@ -1,15 +1,12 @@
 FROM debian:buster
 
 
-# lance le script pour télécharger wordpress
+# copie et gèrer les droits du script d'entrée
 COPY    ./tool/entrypoint.sh /tmp/
-
+RUN     chmod +x /tmp/entrypoint.sh
 
 # installe les packets nécessaires pour php-fpm
-# intalle wp-cli qui permettra d'installer le plugin redis et pho-redis qui permettra de store PHP sessions
 # créer le dossier run/php pour lancer php
-RUN chmod +x /tmp/entrypoint.sh
-
 RUN apt-get update && apt-get install -y \
             wget \
             php \
@@ -22,16 +19,14 @@ RUN apt-get update && apt-get install -y \
             php-mbstring \
             && mkdir /run/php
 
-# RUN wget https://wordpress.org/latest.tar.gz && \
-# 	tar -xzvf latest.tar.gz && \
-# 	rm -rf latest.tar.gz
-
-# RUN     wget -P /usr/bin https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-# RUN     chmod +x /usr/bin/wp-cli.phar && mkdir /var/www/wordpress/config
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -P /tmp && \
+		mv /tmp/wp-cli.phar /usr/local/bin/wp && \
+		chmod +x /usr/local/bin/wp
 
 # copie la config pour communiquer avec nginx via le port 9000 au lieu du socket
 COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
 
+# changer de working directory
 WORKDIR /var/www
 
 EXPOSE 9000

@@ -46,7 +46,7 @@ nginx:
 wp:
 		@docker exec -it wordpress bash
 db:
-		@docker exec -it mariadb bash
+		@docker exec -it mariadb sh
 
 # docker usefull cmds
 prune: 	down
