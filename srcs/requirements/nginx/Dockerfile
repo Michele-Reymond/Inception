@@ -4,10 +4,10 @@ FROM debian:buster
 # Install nginx and ssl
 RUN apt-get -y update && apt-get -y install nginx 
 
-RUN mkdir -p /etc/nginx/ssl && apt-get -y install openssl && \
+RUN mkdir -p /etc/ssl && apt-get -y install openssl && \
     openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
-    -out /etc/nginx/ssl/mreymond.42.fr.crt \
-    -keyout /etc/nginx/ssl/mreymond.42.fr.key \
+    -out /etc/ssl/mreymond.42.fr.crt \
+    -keyout /etc/ssl/mreymond.42.fr.key \
     -subj "/C=CH/ST=VD/L=Lausanne/O=42/OU=student/CN=mreymond.42.fr/UID=mreymond"
 
 # copy default config
