@@ -13,42 +13,35 @@ services:
     env_file:
       - .env
 
-# volumes:
-#   db_data:
-#     driver: local
-#     driver_opts:
-#       device: /Users/$USER/data/db
-#       type: volume
-#       o: bind
+  wordpress:
+    depends_on:
+      - mariadb
+    container_name: wordpress
+    build:
+        context: ./requirements/wordpress
+        dockerfile: Dockerfile
+    image: wordpress
+    # image: wordpress:6.1.1-php8.2-fpm
+    volumes:
+      - ~/data/wp:/var/www/html
+    restart: always
+    networks:
+      - inception-network
+    env_file:
+      - .env
 
-networks:
-  inception-network:
-
-  # wordpress:
-  #   depends_on:
-  #     - mariadb
-  #   container_name: wordpress
-  #   image: wordpress:6.1.1-php8.2-fpm
-  #   volumes:
-  #     - wp_data:/var/www/html
-  #   restart: always
-  #   networks:
-  #     - inception-network
-  #   env_file:
-  #     - .env
-
-  # nginx:
-  #     container_name: nginx
-  #     build:
-  #       context: ./requirements/nginx
-  #       dockerfile: Dockerfile
-  #     ports:
-  #       - 443:443 #https 
-  #     volumes:
-  #       - wp_data:/var/www/html
-  #     restart: always
-  #     networks:
-  #       - inception-network
+  nginx:
+      container_name: nginx
+      build:
+        context: ./requirements/nginx
+        dockerfile: Dockerfile
+      ports:
+        - 443:443 #https 
+      volumes:
+        - ~/data/wp:/var/www/html
+      restart: always
+      networks:
+        - inception-network
 
 # volumes:
 #   db_data:
@@ -64,5 +57,5 @@ networks:
 #       o: bind
 #       device: /Users/$USER/data/wp
 
-# networks:
-#   inception-network:
+networks:
+  inception-network:
