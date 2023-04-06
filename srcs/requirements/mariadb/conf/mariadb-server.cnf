@@ -3,7 +3,7 @@
 
 # this is read by the standalone daemon and embedded servers
 [server]
-socket: '/run/mysqld/mysqld.sock'
+socket='/run/mysqld/mysqld.sock'
 
 # this is only for the mysqld standalone daemon
 [mysqld]
