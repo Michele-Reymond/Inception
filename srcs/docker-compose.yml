@@ -8,7 +8,7 @@ services:
     ports:
       - 443:443 #https 
     volumes:
-      - ~/data/wp:/var/www/wordpress
+      - wp_data:/var/www/wordpress:rw
     restart: always
     networks:
       - inception-network
@@ -20,7 +20,7 @@ services:
         context: ./requirements/mariadb
         dockerfile: Dockerfile
     volumes:
-      - ~/data/db:/var/lib/mysql
+      - db_data:/var/lib/mysql:rw
     restart: always
     networks:
       - inception-network
@@ -37,20 +37,22 @@ services:
     image: wordpress
     # image: wordpress:6.1.1-php8.2-fpm
     volumes:
-      - ~/data/wp:/var/www/wordpress
+      - wp_data:/var/www/wordpress:rw
     restart: always
     networks:
       - inception-network
     env_file:
       - .env
 
+volumes:
+  wp_data:
+    driver_opts:
+      type: volume
+      device: /home/data/wp
+  db_data:
+    driver_opts:
+      type: volume
+      device: /home/data/db
+
 networks:
   inception-network:
-
-# volumes:
-#   wordpress-volume:
-#     driver: local
-#     driver_opts:
-#       device: ~/data/wp/
-#       type: volume
-#       o: bind

@@ -2,7 +2,7 @@ server {
 
 	listen	443 ssl http2;
 	listen	[::]:443 ssl http2;
-	server_name mreymond.42.fr www.mreymond.42.fr;
+	server_name localhost;
 	root /var/www/wordpress;
 	index index.php index.html;
 
@@ -42,14 +42,3 @@ server {
         try_files $uri $uri/ /index.php$is_args$args;
     }
 }
-
-# rediriger http vers https
-server {
-    listen 80;
-    listen [::]:80;
-
-    server_name mreymond.42.fr www.mreymond.42.fr;
-
-    return 302 https://$server_name$request_uri;
-}
-

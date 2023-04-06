@@ -13,7 +13,6 @@ if [ ! -e ./wordpress/wp-config.php ]; then
     tar -xzvf latest.tar.gz
     rm -rf latest.tar.gz
 
-
     cd wordpress
 	sed -i "s/username_here/$MYSQL_USER/g" wp-config-sample.php
 	sed -i "s/password_here/$MYSQL_PASSWORD/g" wp-config-sample.php

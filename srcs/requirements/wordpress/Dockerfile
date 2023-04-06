@@ -33,4 +33,3 @@ WORKDIR /var/www
 EXPOSE 9000
 
 ENTRYPOINT ["/tmp/entrypoint.sh"]
-# CMD [ "sleep", "infinity" ]

@@ -17,26 +17,16 @@ down:
 		@docker compose -f ./srcs/docker-compose.yml down --remove-orphans;
 
 clean:	down
-		rm -rf /Users/$(USER)/data
 		@echo "Deleting all images : "
 		@docker image rmi -f `docker images -qa`;
 		@echo "Deleting all volumes : "
 		@docker volume rm -f `docker volume ls -q`;
+		rm -rf /Users/$(USER)/data
 
 cvol:	down
-		rm -rf /Users/$(USER)/data
 		@echo "Deleting all volumes : "
 		@docker volume rm -f `docker volume ls -q`;
-
-# create:
-# 		@sh setup.sh
-# 		@docker-compose -f ./srcs/docker-compose.yml create --build
-
-# start:
-# 		docker-compose -f ./srcs/docker-compose.yml start;
-
-# stop:
-# 		docker-compose -f ./srcs/docker-compose.yml stop;
+		rm -rf /Users/$(USER)/data
 
 re:		clean run
 
