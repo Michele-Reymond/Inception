@@ -46,13 +46,19 @@ services:
 
 volumes:
   wp_data:
+    name: wp
+    driver: local
     driver_opts:
-      type: volume
-      device: /home/data/wp
+      type: none
+      o: bind
+      device: /Users/mreymond/data/wp
   db_data:
+    name: db
+    driver: local
     driver_opts:
-      type: volume
-      device: /home/data/db
+      type: none
+      o: bind
+      device: /Users/mreymond/data/db
 
 networks:
   inception-network:
