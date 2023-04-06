@@ -1,9 +1,18 @@
 #!/bin/sh
 
 if [ ! -e ./wordpress/wp-config.php ]; then
+    #attendre mariaDB
+    while ! mysqladmin --host=${MYSQL_HOSTNAME} --user=${MYSQL_USER} --password=${MYSQL_PASSWORD} ping --silent ;
+	do
+		echo "Waiting for MariaDB..."
+		sleep 1
+	done
+
+    #install wordpress
     wget https://wordpress.org/latest.tar.gz
     tar -xzvf latest.tar.gz
     rm -rf latest.tar.gz
+
 
     cd wordpress
 	sed -i "s/username_here/$MYSQL_USER/g" wp-config-sample.php

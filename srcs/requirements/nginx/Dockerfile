@@ -4,6 +4,7 @@ FROM debian:buster
 # Install nginx and ssl
 RUN apt-get -y update && apt-get -y install nginx 
 
+# Create SSL certificate
 RUN mkdir -p /etc/ssl && apt-get -y install openssl && \
     openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
     -out /etc/ssl/mreymond.42.fr.crt \

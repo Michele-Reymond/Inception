@@ -1,6 +1,5 @@
 FROM debian:buster
 
-
 # copie et gèrer les droits du script d'entrée
 COPY    ./tool/entrypoint.sh /tmp/
 RUN     chmod +x /tmp/entrypoint.sh
@@ -8,6 +7,7 @@ RUN     chmod +x /tmp/entrypoint.sh
 # installe les packets nécessaires pour php-fpm
 # créer le dossier run/php pour lancer php
 RUN apt-get update && apt-get install -y \
+            mariadb-client \
             wget \
             php \
             php-cgi \
@@ -19,6 +19,7 @@ RUN apt-get update && apt-get install -y \
             php-mbstring \
             && mkdir /run/php
 
+# pour utiliser la commande wp
 RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -P /tmp && \
 		mv /tmp/wp-cli.phar /usr/local/bin/wp && \
 		chmod +x /usr/local/bin/wp
