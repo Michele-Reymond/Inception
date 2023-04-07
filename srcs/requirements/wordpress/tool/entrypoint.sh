@@ -10,8 +10,10 @@ if [ ! -e ./wordpress/wp-config.php ]; then
 
     #install wordpress
     wget https://wordpress.org/latest.tar.gz
+	sleep 1
     tar -xzvf latest.tar.gz
     rm -rf latest.tar.gz
+	echo "Wordpress installed"
 
     cd wordpress
 	sed -i "s/username_here/$MYSQL_USER/g" wp-config-sample.php
@@ -24,11 +26,12 @@ if [ ! -e ./wordpress/wp-config.php ]; then
 
     wp core install --url="$WORDPRESS_URL" --title="$WORDPRESS_TITLE" --admin_user="$WORDPRESS_ADMIN_USER" \
     	--admin_password="$WORDPRESS_ADMIN_PASSWORD" --admin_email="$WORDPRESS_ADMIN_EMAIL" --skip-email --allow-root
+	echo "Wordpress configured"
 
     # création d'un utilisateur
 	wp user create $WORDPRESS_USER $WORDPRESS_USER_EMAIL --role=editor --user_pass=$WORDPRESS_USER_PASSWORD --allow-root
     
-    echo "Wordpress fully installed"
+    echo "New user created"
 else
     echo "Wordpress already installed"
 fi
