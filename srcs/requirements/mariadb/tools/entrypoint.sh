@@ -5,16 +5,17 @@ chown -R mysql:mysql /var/lib/mysql/
 chmod -R 750 /var/lib/mysql/
 
 # install la DB
-mysql_install_db --datadir=/var/lib/mysql
-
-# init mysql 
-/usr/bin/mysqld_safe --datadir=/var/lib/mysql --nowatch
+mysql_install_db
+sleep 10s
 
 # check si la db existe déjà
 if [ -d "/var/lib/mysql/$MYSQL_DATABASE" ]
 then 
 	echo "Database already exists"
 else
+    # init mysql 
+    /etc/init.d/mysql start
+
     # lancement de mysql_secure_installation avec réponses automatiques avec expect
     echo "Secure installation..."
     sleep 1
@@ -42,11 +43,12 @@ else
         "
 
         echo "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE; GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; FLUSH PRIVILEGES;" | mysql -uroot -p$MYSQL_ROOT_PASSWORD
+        
+        echo "Restarting..."
+        killall mysqld
+	    sleep 1
 fi
 
-echo "Restarting..."
-/etc/init.d/mysql stop
-
-echo "Launching mariadb..."
 # Lancement du serveur DB
+echo "Launching mariadb..."
 /usr/sbin/mysqld
