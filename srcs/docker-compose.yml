@@ -51,14 +51,14 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /Users/mreymond/data/wp
+      device: /home/mreymond/data/wp
   db_data:
     name: db
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /Users/mreymond/data/db
+      device: /home/mreymond/data/db
 
 networks:
   inception-network:

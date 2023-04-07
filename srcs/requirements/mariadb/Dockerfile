@@ -1,18 +1,14 @@
-FROM alpine:3.16
+FROM debian:buster
 
 COPY ./tools/entrypoint.sh ./
 
-# installe les packets nécessaires 
-RUN apk update && apk add mariadb mariadb-client expect
+RUN apt-get update && apt-get -y install mariadb-server mariadb-client expect
 
-#  Pour modifier et accepter les connexions en dehors du localhost
-RUN sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/my.cnf.d/mariadb-server.cnf
-RUN sed -i "s|.*skip-networking.*|#skip-networking|g" /etc/my.cnf.d/mariadb-server.cnf
+RUN sed -i "s|.*bind-address\s*=.*|bind-address=0.0.0.0|g" /etc/mysql/mariadb.conf.d/50-server.cnf
+RUN sed -i "s|.*skip-networking.*|#skip-networking|g" /etc/mysql/mariadb.conf.d/50-server.cnf
 
-# gérer les droits d'execution de entrypoint
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 3306
 
-# lancer le script au depart du container
 ENTRYPOINT ["./entrypoint.sh"]

@@ -1,18 +1,20 @@
 #!/bin/sh
 
+# change owner
 chown -R mysql:mysql /var/lib/mysql/
 chmod -R 750 /var/lib/mysql/
+
+# install la DB
+mysql_install_db --datadir=/var/lib/mysql
+
+# init mysql 
+/usr/bin/mysqld_safe --datadir=/var/lib/mysql --nowatch
 
 # check si la db existe déjà
 if [ -d "/var/lib/mysql/$MYSQL_DATABASE" ]
 then 
 	echo "Database already exists"
 else
-
-    mariadb-install-db --datadir=/var/lib/mysql
-
-    /usr/bin/mariadbd-safe --datadir=/var/lib/mysql --nowatch
-
     # lancement de mysql_secure_installation avec réponses automatiques avec expect
     echo "Secure installation..."
     sleep 1
@@ -22,8 +24,6 @@ else
         spawn mysql_secure_installation
         expect \"Enter current password for root (enter for none):\"
         send \"\r\"
-        expect \"Switch to unix_socket authentication\"
-        send \"n\r\"
         expect \"Set root password?\"
         send \"Y\r\"
         expect \"New password:\"
@@ -42,10 +42,11 @@ else
         "
 
         echo "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE; GRANT ALL ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD'; FLUSH PRIVILEGES;" | mysql -uroot -p$MYSQL_ROOT_PASSWORD
-
-        echo "Restarting..."
-        sleep 1
-        pkill -9 maria
 fi
 
-/usr/bin/mariadbd-safe --datadir=/var/lib/mysql
+echo "Restarting..."
+/etc/init.d/mysql stop
+
+echo "Launching mariadb..."
+# Lancement du serveur DB
+/usr/sbin/mysqld

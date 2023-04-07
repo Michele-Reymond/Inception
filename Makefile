@@ -1,16 +1,16 @@
 all: run
 
 run:
-		@if [ ! -e "/Users/$(USER)/data" ]; then \
+		@if [ ! -e "/home/mreymond/data" ]; then \
 			echo "Setting up volumes:"; \
-			mkdir /Users/$(USER)/data; \
-			mkdir /Users/$(USER)/data/db; \
-			mkdir /Users/$(USER)/data/wp; \
-			echo "volumes installed in /Users/$(USER)/data"; \
+			mkdir /home/mreymond/data; \
+			mkdir /home/mreymond/data/db; \
+			mkdir /home/mreymond/data/wp; \
+			echo "volumes installed in /home/mreymond/data"; \
 		fi
-# sudo chmod 777 /etc/hosts
-# sudo echo "127.0.0.1 mreymond.42.fr" >> /etc/hosts
-# sudo echo "127.0.0.1 www.mreymond.42.fr" >> /etc/hosts
+		sudo chmod 777 /etc/hosts
+		sudo echo "127.0.0.1 mreymond.42.fr" >> /etc/hosts
+		sudo echo "127.0.0.1 www.mreymond.42.fr" >> /etc/hosts
 		@docker compose -f ./srcs/docker-compose.yml up -d --build
 
 down:
@@ -21,12 +21,12 @@ clean:	down
 		@docker image rmi -f `docker images -qa`;
 		@echo "Deleting all volumes : "
 		@docker volume rm -f `docker volume ls -q`;
-		rm -rf /Users/$(USER)/data
+		rm -rf /home/mreymond/data
 
 cvol:	down
 		@echo "Deleting all volumes : "
 		@docker volume rm -f `docker volume ls -q`;
-		rm -rf /Users/$(USER)/data
+		rm -rf /home/mreymond/data
 
 re:		clean run
 
